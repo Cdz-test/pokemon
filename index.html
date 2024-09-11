@@ -1,0 +1,622 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeShame.dev</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css">
+    <style>
+        /* Custom scrollbar for specific elements */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background-color: #f1f5f9;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: #9ca3af;
+        }
+    </style>
+<meta name="description" content="Voici un site fabuleux a propos de pokémon, crée par Codyz!"></head>
+<body>
+
+    <nav class="py-4 px-6 bg-pink-100 shadow-md relative z-50">
+    <div class="container mx-auto flex items-center justify-between">
+        <a href="#" class="text-2xl font-bold text-pink-600"><i class="fas fa-paw mr-2"></i>PokeShame</a>
+        <button id="menu-toggle" class="lg:hidden">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokelinecap="round" strokelinejoin="round" strokewidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+        <ul id="menu" class="hidden lg:flex lg:space-x-6 absolute lg:relative top-full left-0 right-0 bg-pink-100 lg:bg-transparent flex-col lg:flex-row items-center justify-center lg:justify-center py-4 lg:py-0 w-full">
+            <li class="w-full text-center"><a href="#about" class="block py-2 lg:py-0 hover:text-pink-500">About</a></li>
+            <li class="w-full text-center"><a href="#hall-of-shame" class="block py-2 lg:py-0 hover:text-pink-500">Hall of Shame</a></li>
+            <li class="w-full text-center"><a href="#redemption" class="block py-2 lg:py-0 hover:text-pink-500">Redemption</a></li>
+            <li class="w-full text-center"><a href="#contact" class="block py-2 lg:py-0 hover:text-pink-500">Contact</a></li>
+        </ul>
+    </div>
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</nav>
+
+    <header class="relative h-screen bg-gradient-to-r from-pink-400 to-pink-600 overflow-hidden">
+    <div class="absolute inset-0 bg-center bg-cover opacity-30 pointer-events-none" style="background-image: url('https://images.unsplash.com/photo-1507346684407-31bd9890f8a9?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwxOHx8cG9rZW1vbnxlbnwwfDB8fHwxNzI2MDg4MDk3fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080')"></div>
+    <div class="container mx-auto h-full flex flex-col items-center justify-center text-center text-white relative z-10">
+        <h1 class="text-6xl font-bold mb-4 animate-bounce">Welcome to PokeShame</h1>
+        <p class="text-xl mb-8 animate-pulse">Exposing the worst Pokemon training practices since 2023.</p>
+        <a href="#hall-of-shame" class="bg-white text-pink-600 font-bold py-3 px-6 rounded-full hover:bg-pink-100 transition duration-300 ease-in-out transform hover:scale-110">Enter the Hall of Shame</a>
+    </div>
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden" style="height: 100px;">
+        <svg viewBox="0 0 500 150" preserveAspectRatio="none" style="height: 100%; width: 100%;">
+            <path d="M0.00,49.98 C149.99,150.00 349.20,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: #fff;"></path>
+        </svg>
+    </div>
+    <div id="pokeball" class="absolute w-20 h-20 bg-white rounded-full border-8 border-black cursor-pointer z-50" style="top: 53%; left: 30%;">
+        <div class="w-full h-1/2 bg-red-500 rounded-t-full"></div>
+        <div class="absolute w-8 h-8 bg-white rounded-full border-4 border-black" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+    </div>
+    <script>
+    const pokeball = document.getElementById('pokeball');
+    let isDragging = false;
+    let startX, startY;
+
+    function updatePokeballPosition() {
+        const headerRect = document.querySelector('header').getBoundingClientRect();
+        const pokeballRect = pokeball.getBoundingClientRect();
+        
+        let x = parseFloat(pokeball.style.left) || 30;
+        let y = parseFloat(pokeball.style.top) || 53;
+
+        x = Math.max(0, Math.min(x, 100 - (pokeballRect.width / headerRect.width * 100)));
+        y = Math.max(0, Math.min(y, 100 - (pokeballRect.height / headerRect.height * 100)));
+
+        pokeball.style.left = `${x}%`;
+        pokeball.style.top = `${y}%`;
+    }
+
+    pokeball.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        const rect = pokeball.getBoundingClientRect();
+        startX = e.clientX - rect.left;
+        startY = e.clientY - rect.top;
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            const headerRect = document.querySelector('header').getBoundingClientRect();
+            const x = ((e.clientX - startX - headerRect.left) / headerRect.width) * 100;
+            const y = ((e.clientY - startY - headerRect.top) / headerRect.height) * 100;
+            pokeball.style.left = `${x}%`;
+            pokeball.style.top = `${y}%`;
+            updatePokeballPosition();
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+
+    pokeball.addEventListener('click', (e) => {
+        if (!isDragging) {
+            pokeball.classList.add('animate-spin');
+            setTimeout(() => {
+                pokeball.classList.remove('animate-spin');
+            }, 1000);
+        }
+        e.stopPropagation();
+    });
+
+    window.addEventListener('resize', updatePokeballPosition);
+    updatePokeballPosition();
+
+    // Touch events for mobile
+    pokeball.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const rect = pokeball.getBoundingClientRect();
+        startX = e.touches[0].clientX - rect.left;
+        startY = e.touches[0].clientY - rect.top;
+        e.preventDefault();
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (isDragging) {
+            const headerRect = document.querySelector('header').getBoundingClientRect();
+            const x = ((e.touches[0].clientX - startX - headerRect.left) / headerRect.width) * 100;
+            const y = ((e.touches[0].clientY - startY - headerRect.top) / headerRect.height) * 100;
+            pokeball.style.left = `${x}%`;
+            pokeball.style.top = `${y}%`;
+            updatePokeballPosition();
+        }
+    });
+
+    document.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+    </script>
+</header>
+
+    <section id="about" class="py-16">
+    <div class="container mx-auto text-center relative">
+        <h2 class="text-5xl font-bold mb-8 text-pink-600 animate-bounce">About PokeShame</h2>
+        <p class="text-xl mb-12 animate-fade-in">
+            Are you tired of witnessing <span class="font-bold text-pink-500">horrendous</span> Pokemon training techniques? Do you cringe at the sight of neglected, mistreated, or poorly trained Pokemon? 
+            Then you've come to the right place! PokeShame is dedicated to exposing those trainers who bring shame upon the noble art of Pokemon training.
+        </p>
+        <div class="flex flex-wrap justify-center gap-8">
+            <div class="w-full md:w-1/3 px-4 animate-slide-up">
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105">
+                    <i class="fas fa-exclamation-triangle text-5xl text-pink-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Exposing Bad Practices</h3>
+                    <p class="text-gray-600">We believe in holding trainers accountable for their actions. No more turning a blind eye to Pokemon suffering!</p>
+                </div>
+            </div>
+            <div class="w-full md:w-1/3 px-4 animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105">
+                    <i class="fas fa-heart-broken text-5xl text-pink-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Giving a Voice to Pokemon</h3>
+                    <p class="text-gray-600">Pokemon deserve to be treated with respect and kindness. We're here to amplify their unheard cries.</p>
+                </div>
+            </div>
+            <div class="w-full md:w-1/3 px-4 animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105">
+                    <i class="fas fa-fist-raised text-5xl text-pink-500 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Promoting Ethical Training</h3>
+                    <p class="text-gray-600">Join us in advocating for responsible and compassionate Pokemon training practices.</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-16 animate-fade-in">
+            <h3 class="text-3xl font-bold mb-6 text-pink-600">Our Mission</h3>
+            <p class="text-lg mb-8">To create a world where every Pokemon is treated with love, respect, and dignity.</p>
+            <button class="bg-pink-600 text-white font-bold py-3 px-8 rounded-full hover:bg-pink-700 transition duration-300 ease-in-out transform hover:scale-105">
+                Join the Movement
+            </button>
+        </div>
+        <div id="pokeball1" class="pokeball absolute w-20 h-20 bg-white rounded-full border-8 border-black cursor-pointer z-50" style="top: 20px; left: 20px;">
+            <div class="w-full h-1/2 bg-red-500 rounded-t-full"></div>
+            <div class="absolute w-8 h-8 bg-white rounded-full border-4 border-black" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+        <div id="pokeball2" class="pokeball absolute w-20 h-20 bg-white rounded-full border-8 border-black cursor-pointer z-50" style="top: 60%; right: 8%;">
+            <div class="w-full h-1/2 bg-red-500 rounded-t-full"></div>
+            <div class="absolute w-8 h-8 bg-white rounded-full border-4 border-black" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+        <div id="pokeball3" class="pokeball absolute w-20 h-20 bg-white rounded-full border-8 border-black cursor-pointer z-50" style="top: 45%; left: 10%;">
+            <div class="w-full h-1/2 bg-red-500 rounded-t-full"></div>
+            <div class="absolute w-8 h-8 bg-white rounded-full border-4 border-black" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+        <div id="pokeball4" class="pokeball absolute w-12 h-12 bg-white rounded-full border-4 border-black cursor-pointer z-50" style="bottom: 10%; left: 5%;">
+            <div class="w-full h-1/2 bg-red-500 rounded-t-full"></div>
+            <div class="absolute w-4 h-4 bg-white rounded-full border-2 border-black" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        </div>
+    </div>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-fade-in {
+            animation: fade-in 1s ease-out forwards;
+        }
+        .animate-slide-up {
+            animation: slide-up 1s ease-out forwards;
+        }
+        .pokeball {
+            transition: transform 0.3s ease-in-out;
+        }
+        .pokeball:hover {
+            transform: scale(1.1);
+        }
+        .pokeball.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('#about .animate-fade-in, #about .animate-slide-up').forEach(el => {
+                observer.observe(el);
+            });
+
+            const pokeballs = document.querySelectorAll('.pokeball');
+            pokeballs.forEach(pokeball => {
+                pokeball.addEventListener('click', () => {
+                    pokeball.classList.add('shake');
+                    setTimeout(() => {
+                        pokeball.classList.remove('shake');
+                    }, 500);
+                });
+
+                pokeball.addEventListener('mouseover', () => {
+                    pokeball.style.transform = 'scale(1.1) rotate(10deg)';
+                });
+
+                pokeball.addEventListener('mouseout', () => {
+                    pokeball.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+        });
+    </script>
+</section><section class="bg-gradient-to-br from-pink-200 to-pink-400 py-16 px-8 relative overflow-hidden">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl font-extrabold text-pink-800 mb-8 animate-pulse">Welcome to PokeShame</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white bg-opacity-30 backdrop-filter backdrop-blur-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                <h3 class="text-2xl font-bold text-pink-700 mb-4">Discover Your Inner Pokémon</h3>
+                <p class="text-pink-900">Embrace your quirks and flaws with our unique Pokémon-inspired shame analysis!</p>
+            </div>
+            <div class="bg-white bg-opacity-30 backdrop-filter backdrop-blur-lg rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                <h3 class="text-2xl font-bold text-pink-700 mb-4">Shame No More</h3>
+                <p class="text-pink-900">Turn your embarrassing moments into powerful Pokémon moves!</p>
+            </div>
+        </div>
+    </div>
+    <div class="absolute -bottom-16 -left-16 w-64 h-64 bg-pink-300 rounded-full opacity-50 animate-blob"></div>
+    <div class="absolute -top-16 -right-16 w-64 h-64 bg-pink-300 rounded-full opacity-50 animate-blob animation-delay-2000"></div>
+</section>
+
+<section class="bg-pink-100 py-16 px-8 relative">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl font-extrabold text-pink-800 mb-12 text-center">Featured Shame Pokémon</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:rotate-3 transition-transform duration-300">
+                <img src="https://images.unsplash.com/photo-1666302936888-d41e661bc3dd?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwxMnx8cG9rZW1vbnxlbnwwfDB8fHwxNzI2MDg4MDk3fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-pink-700 mb-2">Embarrassaur</h3>
+                    <p class="text-pink-900">Master of awkward situations</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-rotate-3 transition-transform duration-300">
+                <img src="https://images.unsplash.com/photo-1616196334218-caffdc9b2317?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwzfHxwb2tlbW9ufGVufDB8MHx8fDE3MjYwODgwOTd8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-pink-700 mb-2">Blusheon</h3>
+                    <p class="text-pink-900">Evolves through social anxiety</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:rotate-3 transition-transform duration-300">
+                <img src="https://images.unsplash.com/photo-1621568670868-24a7dfc590e9?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHw0fHxwb2tlbW9ufGVufDB8MHx8fDE3MjYwODgwOTd8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-pink-700 mb-2">Cringeasaur</h3>
+                    <p class="text-pink-900">Specializes in cringe attacks</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute top-0 left-0 w-full h-full bg-pink-200 opacity-30 transform -skew-y-6 pointer-events-none"></div>
+</section>
+
+<style>
+@keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+}
+.animate-blob {
+    animation: blob 7s infinite;
+}
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
+</style>
+
+    <section id="hall-of-shame" class="py-16 bg-pink-100">
+    <div class="container mx-auto">
+        <h2 class="text-4xl font-bold text-center mb-8 text-pink-600">Hall of Shame</h2>
+        <div class="flex flex-wrap -mx-4" id="card-container">
+            <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8 card">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transform transition duration-300 ease-in-out">
+                    <img src="https://images.unsplash.com/photo-1601430854328-26d0d524344a?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwyOHx8cG9rZW1vbnxlbnwwfDB8fHwxNzI2MDg4MzA2fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080">
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold mb-2 text-pink-600">Trainer John D.</h3>
+                        <p class="text-gray-700 text-sm">Caught forcing his Charmander to battle in the rain despite its obvious discomfort.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8 card">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transform transition duration-300 ease-in-out">
+                    <img src="https://images.unsplash.com/photo-1695747003335-ac77eeea43c2?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwyMHx8cG9rZW1vbnxlbnwwfDB8fHwxNzI2MDg4MDk3fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080">
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold mb-2 text-pink-600">Trainer Jane S.</h3>
+                        <p class="text-gray-700 text-sm">Spotted neglecting to feed her Snorlax, resulting in severe malnutrition.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8 card">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transform transition duration-300 ease-in-out">
+                    <img src="https://images.unsplash.com/photo-1715279239396-51e741734462?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwxOXx8cG9rZW1vbnxlbnwwfDB8fHwxNzI2MDg4MDk3fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080">
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold mb-2 text-pink-600">Trainer Mark L.</h3>
+                        <p class="text-gray-700 text-sm">Filmed using cruel and unusual training methods on his Pikachu.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-8 card">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transform transition duration-300 ease-in-out">
+                    <img src="https://images.unsplash.com/photo-1542887486-c0aeb6d2fc46?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwxN3x8cG9rZW1vbnxlbnwwfDB8fHwxNzI2MDg4MDk3fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080">
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold mb-2 text-pink-600">Trainer Emily B.</h3>
+                        <p class="text-gray-700 text-sm">Reported for abandoning her injured Bulbasaur after a tough battle.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const cardContainer = document.getElementById('card-container');
+        const cards = document.querySelectorAll('.card');
+
+        function animateCards() {
+            const containerRect = cardContainer.getBoundingClientRect();
+            const containerTop = containerRect.top;
+            const containerHeight = containerRect.height;
+            const windowHeight = window.innerHeight;
+
+            cards.forEach((card, index) => {
+                const cardRect = card.getBoundingClientRect();
+                const cardTop = cardRect.top;
+                const cardHeight = cardRect.height;
+
+                const scrollProgress = (windowHeight - cardTop) / (windowHeight + cardHeight);
+                const rotateY = Math.min(180, Math.max(-180, (scrollProgress - 0.5) * 720));
+                const scale = 0.8 + (Math.sin(scrollProgress * Math.PI) * 0.2);
+                const translateZ = -Math.abs(Math.cos(scrollProgress * Math.PI)) * 100;
+
+                card.style.transform = `perspective(1000px) rotateY(${rotateY}deg) scale(${scale}) translateZ(${translateZ}px)`;
+                card.style.opacity = Math.sin(scrollProgress * Math.PI);
+
+                if (Math.abs(rotateY) > 90) {
+                    card.style.transform += ' rotateY(180deg)';
+                }
+            });
+        }
+
+        window.addEventListener('scroll', animateCards);
+        window.addEventListener('resize', animateCards);
+        animateCards();
+    </script>
+</section>
+
+    <section class="bg-pink-100 p-10">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div class="flex flex-col justify-center items-center text-center">
+      <h2 class="text-4xl font-bold text-pink-700 mb-4">Welcome to Pokeshame</h2>
+      <p class="text-lg text-pink-600">The ultimate platform to share and discover Pokémon fails and funny moments.</p>
+    </div>
+    <div class="flex justify-center items-center">
+      <img src="https://images.unsplash.com/photo-1665592514154-7970e9b7a105?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwyNXx8cG9rZW1vbnxlbnwwfDB8fHwxNzI2MDg4MzA2fDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080" alt="Pokeshame" class="rounded-lg shadow-lg">
+    </div>
+  </div>
+</section>
+
+<section class="bg-pink-200 p-10" id="animatedSection">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div class="flex flex-col items-center text-center animated-card" data-scroll-position="0">
+      <div class="bg-pink-300 p-6 rounded-full mb-4">
+        <img src="https://images.unsplash.com/photo-1715204800869-5c24da515b33?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwyfHxtb21lbnR8ZW58MHwyfHx8MTcyNjA4ODQ5Nnww&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=100" alt="Feature 1" class="rounded-full">
+      </div>
+      <h3 class="text-2xl font-bold text-pink-800 mb-2">Share Your Moments</h3>
+      <p class="text-pink-700">Upload and share your funniest Pokémon moments with the community.</p>
+    </div>
+    <div class="flex flex-col items-center text-center animated-card" data-scroll-position="0">
+      <div class="bg-pink-300 p-6 rounded-full mb-4">
+        <img src="https://images.unsplash.com/photo-1699645522859-512f53d4a4bf?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwxfHxmYWlsc3xlbnwwfDJ8fHwxNzI2MDg4NTMxfDA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=100" alt="Feature 2" class="rounded-full">
+      </div>
+      <h3 class="text-2xl font-bold text-pink-800 mb-2">Discover Fails</h3>
+      <p class="text-pink-700">Browse through a collection of hilarious Pokémon fails.</p>
+    </div>
+    <div class="flex flex-col items-center text-center animated-card" data-scroll-position="0">
+      <div class="bg-pink-300 p-6 rounded-full mb-4">
+        <img src="https://images.unsplash.com/photo-1620495095937-bacc3412420d?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHwxMXx8Y29tbXVuaXR5fGVufDB8Mnx8fDE3MjYwODg1NjR8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=100" alt="Feature 3" class="rounded-full">
+      </div>
+      <h3 class="text-2xl font-bold text-pink-800 mb-2">Join the Community</h3>
+      <p class="text-pink-700">Connect with other Pokémon enthusiasts and share your experiences.</p>
+    </div>
+  </div>
+  <style>
+    .animated-card {
+      transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    }
+  </style>
+  <script>
+    const animatedSection = document.getElementById('animatedSection');
+    const animatedCards = document.querySelectorAll('.animated-card');
+    let isAnimationStarted = false;
+
+    function handleScroll() {
+      const rect = animatedSection.getBoundingClientRect();
+      const sectionTop = rect.top;
+      const sectionHeight = rect.height;
+      const windowHeight = window.innerHeight;
+
+      if (sectionTop < windowHeight && sectionTop > -sectionHeight) {
+        const scrollPercentage = 1 - (sectionTop / windowHeight);
+        animateCards(scrollPercentage);
+        isAnimationStarted = true;
+      } else if (isAnimationStarted) {
+        resetCards();
+        isAnimationStarted = false;
+      }
+    }
+
+    function animateCards(scrollPercentage) {
+      animatedCards.forEach((card, index) => {
+        const delay = index * 0.1;
+        const translateY = 100 - (scrollPercentage * 100);
+        const opacity = scrollPercentage;
+        const rotate = (1 - scrollPercentage) * 15 * (index % 2 === 0 ? 1 : -1);
+        card.style.transform = `translateY(${translateY}%) rotate(${rotate}deg)`;
+        card.style.opacity = opacity;
+        card.dataset.scrollPosition = scrollPercentage;
+      });
+    }
+
+    function resetCards() {
+      animatedCards.forEach(card => {
+        card.style.transform = 'translateY(100%) rotate(0deg)';
+        card.style.opacity = '0';
+        card.dataset.scrollPosition = '0';
+      });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll);
+    handleScroll();
+  </script>
+</section>
+
+<section class="bg-pink-300 p-10">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div class="flex justify-center items-center">
+      <img src="https://images.unsplash.com/photo-1647892591690-25cf830cda51?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHw0fHxwb2tlbW9ufGVufDB8Mnx8fDE3MjYwODgzNjV8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080" alt="Community" class="rounded-lg shadow-lg">
+    </div>
+    <div class="flex flex-col justify-center items-center text-center">
+      <h2 class="text-4xl font-bold text-pink-900 mb-4">Join Our Community</h2>
+      <p class="text-lg text-pink-800 mb-6">Become a part of the Pokeshame community and enjoy exclusive benefits.</p>
+      <a href="#" class="bg-pink-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-pink-700 transition duration-300">Sign Up Now</a>
+    </div>
+  </div>
+</section><section id="redemption" class="py-16">
+  <div class="container mx-auto">
+    <h2 class="text-4xl font-bold text-center mb-8 text-pink-600 animate-pulse">Seeking Redemption?</h2>
+    <p class="text-lg text-center mb-8">Have you made mistakes in your past as a Pokemon trainer? It's never too late to change your ways! We believe in second chances and offer resources to help you become a more ethical and compassionate trainer.</p>
+    <div class="flex flex-wrap justify-center gap-8">
+      <div class="w-full md:w-1/2 lg:w-1/3 px-4">
+        <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300 ease-in-out newcard transform hover:scale-105 cursor-pointer">
+          <i class="fas fa-book-open text-4xl text-pink-500 mb-4"></i>
+          <h3 class="text-xl font-bold mb-2">Educational Resources</h3>
+          <p class="text-gray-600">Access our comprehensive guides and articles on positive reinforcement training, Pokemon nutrition, and ethical battling techniques.</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 lg:w-1/3 px-4">
+        <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300 ease-in-out newcard transform hover:scale-105 cursor-pointer">
+          <i class="fas fa-comments text-4xl text-pink-500 mb-4"></i>
+          <h3 class="text-xl font-bold mb-2">Support Groups</h3>
+          <p class="text-gray-600">Connect with other trainers who are committed to ethical training and share your experiences in a safe and supportive environment.</p>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 lg:w-1/3 px-4">
+        <div class="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300 ease-in-out newcard transform hover:scale-105 cursor-pointer">
+          <i class="fas fa-hands-helping text-4xl text-pink-500 mb-4"></i>
+          <h3 class="text-xl font-bold mb-2">Rehabilitation Programs</h3>
+          <p class="text-gray-600">We partner with Pokemon rehabilitation centers to provide care and support for Pokemon who have suffered from mistreatment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function() {
+    const cards = document.querySelectorAll('#redemption .newcard');
+    
+    const animateCards = () => {
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.8) rotate(-5deg)';
+        card.style.transition = 'opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.transform = 'scale(1) rotate(0deg)';
+        }, index * 200);
+      });
+    };
+
+    const handleCardClick = (card) => {
+      card.classList.add('clicked');
+      setTimeout(() => card.classList.remove('clicked'), 300);
+    };
+
+    window.addEventListener('load', animateCards);
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => handleCardClick(card));
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCards();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(document.querySelector('#redemption'));
+  })();
+  </script>
+  <style>
+    #redemption .newcard {
+      opacity: 0;
+      transform: scale(0.8) rotate(-5deg);
+      transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease-in-out;
+    }
+    #redemption .newcard:hover {
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    #redemption .newcard.clicked {
+      animation: cardClick 0.3s ease-in-out;
+    }
+    @keyframes cardClick {
+      0% { transform: scale(1); }
+      50% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+    #redemption h2 {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</section>
+
+    <footer id="contact" class="py-8 bg-pink-600 text-white">
+        <div class="container mx-auto text-center">
+            <p class="mb-4">Join the movement for ethical Pokemon training!</p>
+            <ul class="flex justify-center space-x-6">
+                <li><a href="#" class="hover:text-pink-300"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="#" class="hover:text-pink-300"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#" class="hover:text-pink-300"><i class="fab fa-instagram"></i></a></li>
+            </ul>
+            <p class="mt-6 text-sm">© 2023 PokeShame. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+
+</body></html>
