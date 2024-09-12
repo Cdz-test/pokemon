@@ -156,7 +156,7 @@
     <div class="container mx-auto text-center relative">
         <h2 class="text-5xl font-bold mb-8 text-pink-600 animate-bounce">About PokeShame</h2>
         <p class="text-xl mb-12 animate-fade-in">
-            Are you tired of witnessing <span class="font-bold text-pink-500">horrendous</span> Pokemon training techniques? Do you cringe at the sight of neglected, mistreated, or poorly trained Pokemon? 
+            Are you tired of witnessing <span class="font-bold text-pink-500">horrendous</span> Pokemon training techniques? Do you cringe at the sight of neglected, mistreated, or poorly treated Pokemon? 
             Then you've come to the right place! PokeShame is dedicated to exposing those trainers who bring shame upon the noble art of Pokemon training.
         </p>
         <div class="flex flex-wrap justify-center gap-8">
@@ -224,6 +224,14 @@
             25% { transform: rotate(-10deg); }
             75% { transform: rotate(10deg); }
         }
+        @keyframes reveal {
+            from { clip-path: inset(0 100% 0 0); }
+            to { clip-path: inset(0 0 0 0); }
+        }
+        @keyframes unreveal {
+            from { clip-path: inset(0 0 0 0); }
+            to { clip-path: inset(0 100% 0 0); }
+        }
         .animate-float {
             animation: float 6s ease-in-out infinite;
         }
@@ -242,20 +250,45 @@
         .pokeball.shake {
             animation: shake 0.5s ease-in-out;
         }
+        .reveal-text {
+            animation: reveal 1s ease-out forwards;
+        }
+        .unreveal-text {
+            animation: unreveal 1s ease-out forwards;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-fade-in');
-                    }
-                });
-            }, { threshold: 0.1 });
+            const aboutSection = document.getElementById('about');
+            const textElements = aboutSection.querySelectorAll('p, h2, h3');
 
-            document.querySelectorAll('#about .animate-fade-in, #about .animate-slide-up').forEach(el => {
-                observer.observe(el);
-            });
+            function handleScroll() {
+                const rect = aboutSection.getBoundingClientRect();
+                const sectionHeight = rect.height;
+                const windowHeight = window.innerHeight;
+                const sectionTop = rect.top;
+                const sectionBottom = rect.bottom;
+
+                let visiblePercentage;
+                if (sectionTop > 0 && sectionBottom < windowHeight) {
+                    visiblePercentage = 100;
+                } else if (sectionTop < 0 && sectionBottom > windowHeight) {
+                    visiblePercentage = 100;
+                } else if (sectionTop < 0) {
+                    visiblePercentage = (sectionBottom / windowHeight) * 100;
+                } else {
+                    visiblePercentage = ((windowHeight - sectionTop) / windowHeight) * 100;
+                }
+
+                visiblePercentage = Math.max(0, Math.min(100, visiblePercentage));
+
+                textElements.forEach((el) => {
+                    el.style.clipPath = `inset(0 ${100 - visiblePercentage}% 0 0)`;
+                });
+            }
+
+            window.addEventListener('scroll', handleScroll);
+            handleScroll(); // Initial call to set initial state
 
             const pokeballs = document.querySelectorAll('.pokeball');
             pokeballs.forEach(pokeball => {
@@ -518,17 +551,38 @@
   </script>
 </section>
 
-<section class="bg-pink-300 p-10">
+<section id="community-section" class="bg-pink-300 p-10 opacity-0 transform translate-y-20 transition-all duration-1000 ease-out">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
     <div class="flex justify-center items-center">
-      <img src="https://images.unsplash.com/photo-1647892591690-25cf830cda51?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHw0fHxwb2tlbW9ufGVufDB8Mnx8fDE3MjYwODgzNjV8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080" alt="Community" class="rounded-lg shadow-lg">
+      <img src="https://images.unsplash.com/photo-1647892591690-25cf830cda51?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3w2MjU1MDF8MHwxfHNlYXJjaHw0fHxwb2tlbW9ufGVufDB8Mnx8fDE3MjYwODgzNjV8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080" alt="Community" class="rounded-lg shadow-lg transform scale-0 rotate-180 transition-all duration-1000 ease-out">
     </div>
     <div class="flex flex-col justify-center items-center text-center">
-      <h2 class="text-4xl font-bold text-pink-900 mb-4">Join Our Community</h2>
-      <p class="text-lg text-pink-800 mb-6">Become a part of the Pokeshame community and enjoy exclusive benefits.</p>
-      <a href="#" class="bg-pink-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-pink-700 transition duration-300">Sign Up Now</a>
+      <h2 class="text-4xl font-bold text-pink-900 mb-4 opacity-0 transform -translate-x-20 transition-all duration-1000 ease-out">Join Our Community</h2>
+      <p class="text-lg text-pink-800 mb-6 opacity-0 transform translate-x-20 transition-all duration-1000 ease-out">Become a part of the Pokeshame community and enjoy exclusive benefits.</p>
+      <a href="#" class="bg-pink-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-pink-700 transition duration-300 opacity-0 transform -translate-y-20 transition-all duration-1000 ease-out">Sign Up Now</a>
     </div>
   </div>
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('opacity-0', 'translate-y-20');
+          entry.target.querySelector('img').classList.remove('scale-0', 'rotate-180');
+          entry.target.querySelector('h2').classList.remove('opacity-0', '-translate-x-20');
+          entry.target.querySelector('p').classList.remove('opacity-0', 'translate-x-20');
+          entry.target.querySelector('a').classList.remove('opacity-0', '-translate-y-20');
+        } else {
+          entry.target.classList.add('opacity-0', 'translate-y-20');
+          entry.target.querySelector('img').classList.add('scale-0', 'rotate-180');
+          entry.target.querySelector('h2').classList.add('opacity-0', '-translate-x-20');
+          entry.target.querySelector('p').classList.add('opacity-0', 'translate-x-20');
+          entry.target.querySelector('a').classList.add('opacity-0', '-translate-y-20');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    observer.observe(document.getElementById('community-section'));
+  </script>
 </section><section id="redemption" class="py-16">
   <div class="container mx-auto">
     <h2 class="text-4xl font-bold text-center mb-8 text-pink-600 animate-pulse">Seeking Redemption?</h2>
